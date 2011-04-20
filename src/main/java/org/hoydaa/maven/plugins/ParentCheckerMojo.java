@@ -26,6 +26,8 @@ import org.apache.maven.artifact.versioning.OverConstrainedVersionException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.MavenProjectBuilder;
+import org.apache.maven.project.ProjectBuildingException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +43,7 @@ import java.util.List;
  */
 public class ParentCheckerMojo extends AbstractMojo {
 
+    private static final String ENFORCE_UPGRADE = "enforce.upgrade";
     /**
      * @parameter
      * @required
@@ -94,6 +97,11 @@ public class ParentCheckerMojo extends AbstractMojo {
      */
     protected ArtifactFactory artifactFactory;
 
+    /**
+     * @component
+     */
+    protected MavenProjectBuilder mavenProjectBuilder;
+
     public void execute() throws MojoExecutionException {
         Artifact parentArtifact = project.getParentArtifact();
         if (null == parentArtifact || checkArtifacts == null || !hasValidParent()) {
@@ -105,18 +113,24 @@ public class ParentCheckerMojo extends AbstractMojo {
         try {
             ArtifactVersion currentVersion = project.getParentArtifact().getSelectedVersion();
             List<ArtifactVersion> availableVersions = artifactMetadataSource.retrieveAvailableVersions(
-                    artifactFactory.createParentArtifact("org.apache.maven.plugins",
-                            "maven-parent-checker-plugin-parent", "1.0-SNAPSHOT"),
+                    artifactFactory.createParentArtifact(parentArtifact.getGroupId(),
+                            parentArtifact.getArtifactId(), parentArtifact.getVersion()),
                     localRepository, remoteArtifactRepositories);
             List<ArtifactVersion> newVersions = getNewerVersions(currentVersion, availableVersions);
             if (newVersions.size() > 0) {
-                getLog().warn("New versions available: ");
+                boolean forcedUpdateExists = false;
+
+                getLog().warn("New versions available:\tVersion\t\tForced");
                 for (ArtifactVersion version : newVersions) {
-                    getLog().warn("                        " + version.toString());
+                    boolean forced = isForced(version);
+                    forcedUpdateExists = forcedUpdateExists || forced;
+                    getLog().warn("                        \t" + version.toString() + "\t" + forced + "");
                 }
 
                 if (enforceUpgrade) {
                     throw new MojoExecutionException(getWarningText(newVersions));
+                } else if (forcedUpdateExists) {
+                    throw new MojoExecutionException(getWarningText(newVersions) + " You have to upgrade your parent POM to the latest forced update at least!");
                 } else {
                     getLog().info(getWarningText(newVersions));
                 }
@@ -125,7 +139,19 @@ public class ParentCheckerMojo extends AbstractMojo {
             e.printStackTrace();
         } catch (OverConstrainedVersionException e) {
             e.printStackTrace();
+        } catch (ProjectBuildingException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
+    }
+
+    private boolean isForced(ArtifactVersion version) throws ProjectBuildingException {
+        return Boolean.parseBoolean((String) getProjectForParent(version).getProperties().get(ENFORCE_UPGRADE));
+    }
+
+    private MavenProject getProjectForParent(ArtifactVersion version) throws ProjectBuildingException {
+        Artifact parentTemp = artifactFactory.createParentArtifact(project.getParentArtifact().getGroupId(),
+                project.getParentArtifact().getArtifactId(), version.toString());
+        return mavenProjectBuilder.buildFromRepository(parentTemp, remoteArtifactRepositories, localRepository);
     }
 
     private String getWarningText(List<ArtifactVersion> newVersions) {
