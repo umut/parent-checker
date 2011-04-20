@@ -43,7 +43,7 @@ import java.util.List;
  */
 public class ParentCheckerMojo extends AbstractMojo {
 
-    private static final String ENFORCE_UPGRADE = "enforce.upgrade";
+    private static final String FORCE_UPGRADE = "force.upgrade";
     /**
      * @parameter
      * @required
@@ -53,9 +53,9 @@ public class ParentCheckerMojo extends AbstractMojo {
     /**
      * Enforce upgrade
      *
-     * @parameter expression="${enforce.upgrade}"
+     * @parameter expression="${force.upgrade}"
      */
-    private boolean enforceUpgrade;
+    private boolean forceUpgrade;
 
     /**
      * The Maven Project.
@@ -127,7 +127,7 @@ public class ParentCheckerMojo extends AbstractMojo {
                     getLog().warn("                        \t" + version.toString() + "\t" + forced + "");
                 }
 
-                if (enforceUpgrade) {
+                if (forceUpgrade) {
                     throw new MojoExecutionException(getWarningText(newVersions));
                 } else if (forcedUpdateExists) {
                     throw new MojoExecutionException(getWarningText(newVersions) + " You have to upgrade your parent POM to the latest forced update at least!");
@@ -140,12 +140,12 @@ public class ParentCheckerMojo extends AbstractMojo {
         } catch (OverConstrainedVersionException e) {
             e.printStackTrace();
         } catch (ProjectBuildingException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
     }
 
     private boolean isForced(ArtifactVersion version) throws ProjectBuildingException {
-        return Boolean.parseBoolean((String) getProjectForParent(version).getProperties().get(ENFORCE_UPGRADE));
+        return Boolean.parseBoolean((String) getProjectForParent(version).getProperties().get(FORCE_UPGRADE));
     }
 
     private MavenProject getProjectForParent(ArtifactVersion version) throws ProjectBuildingException {
@@ -185,8 +185,8 @@ public class ParentCheckerMojo extends AbstractMojo {
         this.checkArtifacts = checkArtifacts;
     }
 
-    public void setEnforceUpgrade(boolean enforceUpgrade) {
-        this.enforceUpgrade = enforceUpgrade;
+    public void setForceUpgrade(boolean forceUpgrade) {
+        this.forceUpgrade = forceUpgrade;
     }
 
     public void setProject(MavenProject project) {

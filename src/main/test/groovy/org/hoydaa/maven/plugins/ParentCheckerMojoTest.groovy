@@ -35,4 +35,12 @@ class ParentCheckerMojoTest {
         EasyMock.verify artifact
     }
 
+    def void shouldFailBuildIfFailBuildSet() {
+
+    }
+
+    def void shouldFailBuildWhenThereIsEnforcedUpdate() {
+
+    }
+
 }
