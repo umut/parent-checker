@@ -96,7 +96,7 @@ public class ParentCheckerMojo extends AbstractMojo {
 
     public void execute() throws MojoExecutionException {
         Artifact parentArtifact = project.getParentArtifact();
-        if (null == parentArtifact || !hasValidParent()) {
+        if (null == parentArtifact || checkArtifacts == null || !hasValidParent()) {
             getLog().debug("Parent " + parentArtifact + " is not in the list " + checkArtifacts + ", skipping...");
 
             return;
@@ -153,6 +153,34 @@ public class ParentCheckerMojo extends AbstractMojo {
         }
 
         return newVersions;
+    }
+
+    public void setCheckArtifacts(List<org.hoydaa.maven.plugins.Artifact> checkArtifacts) {
+        this.checkArtifacts = checkArtifacts;
+    }
+
+    public void setEnforceUpgrade(boolean enforceUpgrade) {
+        this.enforceUpgrade = enforceUpgrade;
+    }
+
+    public void setProject(MavenProject project) {
+        this.project = project;
+    }
+
+    public void setRemoteArtifactRepositories(List<ArtifactRepository> remoteArtifactRepositories) {
+        this.remoteArtifactRepositories = remoteArtifactRepositories;
+    }
+
+    public void setArtifactMetadataSource(ArtifactMetadataSource artifactMetadataSource) {
+        this.artifactMetadataSource = artifactMetadataSource;
+    }
+
+    public void setLocalRepository(ArtifactRepository localRepository) {
+        this.localRepository = localRepository;
+    }
+
+    public void setArtifactFactory(ArtifactFactory artifactFactory) {
+        this.artifactFactory = artifactFactory;
     }
 
 }

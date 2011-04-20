@@ -11,6 +11,15 @@ public class Artifact {
 
     private String artifactId;
 
+    public Artifact() {
+
+    }
+
+    public Artifact(String groupId, String artifactId) {
+        this.groupId = groupId;
+        this.artifactId = artifactId;
+    }
+
     public String getGroupId() {
         return groupId;
     }
