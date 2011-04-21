@@ -35,8 +35,10 @@ import java.util.List;
 /**
  * Checks whether there is a newer parent POM for the project.
  *
+ * @author Umut Utkan
  * @goal check
- * @phase process-sources
+ * @phase validate
+ * @threadSafe
  * @requiresOnline true
  * @requiresProject true
  * @requiresDirectInvocation false
@@ -44,6 +46,7 @@ import java.util.List;
 public class ParentCheckerMojo extends AbstractMojo {
 
     private static final String FORCE_UPGRADE = "force.upgrade";
+
     /**
      * @parameter
      * @required
@@ -120,11 +123,11 @@ public class ParentCheckerMojo extends AbstractMojo {
             if (newVersions.size() > 0) {
                 boolean forcedUpdateExists = false;
 
-                getLog().warn("New versions available:\tVersion\t\tForced");
+                getLog().warn("New versions available for your parent POM '" + parentArtifact.toString() + "'!");
                 for (ArtifactVersion version : newVersions) {
                     boolean forced = isForced(version);
                     forcedUpdateExists = forcedUpdateExists || forced;
-                    getLog().warn("                        \t" + version.toString() + "\t" + forced + "");
+                    getLog().warn(version.toString() + " (" + (forced ? "FORCED" : "not forced") + ")");
                 }
 
                 if (forceUpgrade) {
@@ -132,7 +135,7 @@ public class ParentCheckerMojo extends AbstractMojo {
                 } else if (forcedUpdateExists) {
                     throw new MojoExecutionException(getWarningText(newVersions) + " You have to upgrade your parent POM to the latest forced update at least!");
                 } else {
-                    getLog().info(getWarningText(newVersions));
+                    getLog().warn(getWarningText(newVersions));
                 }
             }
         } catch (ArtifactMetadataRetrievalException e) {
