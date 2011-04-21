@@ -2,7 +2,7 @@
 
 Plugin to force parent POM updates for using projects.
 
-Releasing and having the using projects upgrade to the new version of a parent `POM` is always a burden. You have send
+Releasing and having the using projects upgrade to the new version of a parent `POM`  is always a burden. You have send
 an email to the developers of the projects requesting an upgrade on the parent `POM` but it simply does not reach it's
 destination, goes to junk or simply no one cares :)
 
