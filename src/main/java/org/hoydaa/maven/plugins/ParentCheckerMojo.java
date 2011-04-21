@@ -28,6 +28,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectBuilder;
 import org.apache.maven.project.ProjectBuildingException;
+import org.codehaus.plexus.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -176,7 +177,7 @@ public class ParentCheckerMojo extends AbstractMojo {
     private List<ArtifactVersion> getNewerVersions(ArtifactVersion current, List<ArtifactVersion> availableVersions) {
         List<ArtifactVersion> newVersions = new ArrayList<ArtifactVersion>();
         for (ArtifactVersion version : availableVersions) {
-            if (version.compareTo(current) > 0) {
+            if (StringUtils.isEmpty(version.getQualifier()) && version.compareTo(current) > 0) {
                 newVersions.add(version);
             }
         }
