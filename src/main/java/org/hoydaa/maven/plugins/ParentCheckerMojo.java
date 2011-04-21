@@ -212,4 +212,11 @@ public class ParentCheckerMojo extends AbstractMojo {
         this.artifactFactory = artifactFactory;
     }
 
+    public MavenProjectBuilder getMavenProjectBuilder() {
+        return mavenProjectBuilder;
+    }
+
+    public void setMavenProjectBuilder(MavenProjectBuilder mavenProjectBuilder) {
+        this.mavenProjectBuilder = mavenProjectBuilder;
+    }
 }
