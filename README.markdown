@@ -48,11 +48,21 @@ explicitly specify an `execution` in the plugin configuration. What the plugin d
 - **forceUpgrade**: If true, makes the plugin fail if a newer version for the parent `POM` is available either in the local repository or in one of the remote repositories.
 - **checkArtifacts**: Set the parent `POM` artifacts that you want to be checked by the plugin. You can set more than one.
 
-Another option to make the build fail is to have a property named `forceUpgrade` within the released parent `POM`. In
+Another option to make the build fail is to have a property named `force.upgrade` within the released parent `POM`. In
 this case no matter what is configured in the plugin configuration --regarding forceUpgrade--, if the plugin finds
-`forceUpgrade=true` within any release `POM` file it will make the build fail since it is assuming that you have a
+`force.upgrade=true` within any release `POM` file it will make the build fail since it is assuming that you have a
 SPECIFIC VERSION that you want to force for update. So if you want a specific version to force for update, just add a
-property named `forceUpgrade` in it before releasing it.
+property named `force.upgrade` in it before releasing like the following example.
+
+    :::xml
+    <project>
+    ....
+        <properties>
+            <force.upgrade>true</force.upgrade>
+            ....
+        </properties>
+    ....
+    </project>
 
 ###Usage
 
