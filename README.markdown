@@ -43,6 +43,17 @@ explicitly specify an `execution` in the plugin configuration. What the plugin d
         </configuration>
     </plugin>
 
+####Options
+
+- **forceUpgrade**: If true, makes the plugin fail if a newer version for the parent `POM` is available either in the local repository or in one of the remote repositories.
+- **checkArtifacts**: Set the parent `POM` artifacts that you want to be checked by the plugin. You can set more than one.
+
+Another option to make the build fail is to have a property named `forceUpgrade` within the released parent `POM`. In
+this case no matter what is configured in the plugin configuration --regarding forceUpgrade--, if the plugin finds
+`forceUpgrade=true` within any release `POM` file it will make the build fail since it is assuming that you have a
+SPECIFIC VERSION that you want to force for update. So if you want a specific version to force for update, just add a
+property named `forceUpgrade` in it before releasing it.
+
 ###Usage
 
 As said, the plugin attaches itself to the `validate` life-cycle phase, meaning; it is enough that you define the plugin
@@ -61,3 +72,35 @@ plugin prefix to run it which is less verbose.
 In this case you just have to use the plugin prefix and the goal to run it, no `groupId` or `artifactId` is needed.
 
     mvn parent-checker:check
+
+###Outputs
+
+Depending on the situation the plugin behaves differently and produces different outputs.
+
+When the plugin is configured with `force.update=false` and there are two new versions, it just displays a warning log.
+
+    [WARNING] New versions available for your parent POM 'org.apache.maven.plugins:maven-parent-checker-plugin-parent:pom:1.0-SNAPSHOT'!
+    [WARNING] 1.1-SNAPSHOT (not forced)
+    [WARNING] 1.2-SNAPSHOT (not forced)
+    [WARNING] Your parent POM org.apache.maven.plugins:maven-parent-checker-plugin-parent:pom:1.0-SNAPSHOT is 2 versions behind, you have to upgrade it to 1.2-SNAPSHOT.
+
+When the plugin is configured with `force.update=true` and there are two new versions, it makes the build fail.
+
+    [WARNING] New versions available for your parent POM 'org.apache.maven.plugins:maven-parent-checker-plugin-parent:pom:1.0-SNAPSHOT'!
+    [WARNING] 1.1-SNAPSHOT (not forced)
+    [WARNING] 1.2-SNAPSHOT (not forced)
+    [INFO] ------------------------------------------------------------------------
+    [ERROR] BUILD ERROR
+    [INFO] ------------------------------------------------------------------------
+    [INFO] Your parent POM org.apache.maven.plugins:maven-parent-checker-plugin-parent:pom:1.0-SNAPSHOT is 2 versions behind, you have to upgrade it to 1.2-SNAPSHOT.
+
+When the plugin is configured with `force.update=false` and there are three versions one of which is forced, it makes the build fail even the `force.update` is false.
+
+    [WARNING] New versions available for your parent POM 'org.apache.maven.plugins:maven-parent-checker-plugin-parent:pom:1.0-SNAPSHOT'!
+    [WARNING] 1.1-SNAPSHOT (not forced)
+    [WARNING] 1.2-SNAPSHOT (not forced)
+    [WARNING] 1.3-SNAPSHOT (FORCED)
+    [INFO] ------------------------------------------------------------------------
+    [ERROR] BUILD ERROR
+    [INFO] ------------------------------------------------------------------------
+    [INFO] Your parent POM org.apache.maven.plugins:maven-parent-checker-plugin-parent:pom:1.0-SNAPSHOT is 3 versions behind, you have to upgrade it to 1.3-SNAPSHOT. You have to upgrade your parent POM to the latest forced update at least!
