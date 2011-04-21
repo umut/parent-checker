@@ -13,7 +13,7 @@ explicitly specifies an execution in the plugin configuration. What the plugin d
  - If so checks whether there is a newer version
  - If so depending on the plugin configuration, it makes the build fail or print a warning message to let the developer be aware of it
 
-Configuration
+###Configuration
 <plugin>
     <groupId>org.hoydaa.maven.plugins</groupId>
     <artifactId>parent-checker-maven-plugin</artifactId>
@@ -38,7 +38,7 @@ Configuration
     </configuration>
 </plugin>
 
-Usage
+###Usage
 
 As said the plugin attaches itself to the validate lifecycle phase, meaning; it is enough that you define the plugin
 within your parent POM. Bu you can also the the plugin explicitly by executing the following line.
