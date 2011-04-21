@@ -48,21 +48,24 @@ public class ParentCheckerMojo extends AbstractMojo {
 
     private static final String FORCE_UPGRADE = "force.upgrade";
 
+
     /**
+     * Artifacts to be checked
+     *
      * @parameter
      * @required
      */
     private List<org.hoydaa.maven.plugins.Artifact> checkArtifacts;
 
     /**
-     * Enforce upgrade
+     * Force upgrade
      *
      * @parameter expression="${force.upgrade}"
      */
     private boolean forceUpgrade;
 
     /**
-     * The Maven Project.
+     * The Maven Project
      *
      * @parameter expression="${project}"
      * @required
@@ -72,6 +75,8 @@ public class ParentCheckerMojo extends AbstractMojo {
     private MavenProject project;
 
     /**
+     * Remote repositories in use
+     *
      * @parameter expression="${project.remoteArtifactRepositories}"
      * @readonly
      * @since 1.0-alpha-3
@@ -79,7 +84,7 @@ public class ParentCheckerMojo extends AbstractMojo {
     protected List<ArtifactRepository> remoteArtifactRepositories;
 
     /**
-     * The artifact metadata source to use.
+     * The artifact metadata source to use
      *
      * @component
      * @required
@@ -89,6 +94,8 @@ public class ParentCheckerMojo extends AbstractMojo {
     protected ArtifactMetadataSource artifactMetadataSource;
 
     /**
+     * Local repository
+     *
      * @parameter expression="${localRepository}"
      * @readonly
      * @since 1.0-alpha-1
@@ -96,15 +103,20 @@ public class ParentCheckerMojo extends AbstractMojo {
     protected ArtifactRepository localRepository;
 
     /**
+     * Artifact factory to use
+     *
      * @component
      * @since 1.0-alpha-1
      */
     protected ArtifactFactory artifactFactory;
 
     /**
+     * Maven project builder to use
+     *
      * @component
      */
     protected MavenProjectBuilder mavenProjectBuilder;
+
 
     public void execute() throws MojoExecutionException {
         Artifact parentArtifact = project.getParentArtifact();
@@ -148,21 +160,25 @@ public class ParentCheckerMojo extends AbstractMojo {
         }
     }
 
+    //returns if artifact is forced for update
     private boolean isForced(ArtifactVersion version) throws ProjectBuildingException {
         return Boolean.parseBoolean((String) getProjectForParent(version).getProperties().get(FORCE_UPGRADE));
     }
 
+    //returns project for the parent artifact
     private MavenProject getProjectForParent(ArtifactVersion version) throws ProjectBuildingException {
         Artifact parentTemp = artifactFactory.createParentArtifact(project.getParentArtifact().getGroupId(),
                 project.getParentArtifact().getArtifactId(), version.toString());
         return mavenProjectBuilder.buildFromRepository(parentTemp, remoteArtifactRepositories, localRepository);
     }
 
+    //returns a warning message to display in logs
     private String getWarningText(List<ArtifactVersion> newVersions) {
         return "Your parent POM " + project.getParentArtifact().toString() + " is " + newVersions.size()
                 + " versions behind, you have to upgrade it to " + newVersions.get(newVersions.size() - 1) + ".";
     }
 
+    //checks if the parent is in the list of artifacts to check
     private boolean hasValidParent() {
         for (org.hoydaa.maven.plugins.Artifact artifact : checkArtifacts) {
             if (artifact.getGroupId().equals(project.getParentArtifact().getGroupId())
@@ -174,6 +190,7 @@ public class ParentCheckerMojo extends AbstractMojo {
         return false;
     }
 
+    //extracts newer/valid versions from a list of available versions
     private List<ArtifactVersion> getNewerVersions(ArtifactVersion current, List<ArtifactVersion> availableVersions) {
         List<ArtifactVersion> newVersions = new ArrayList<ArtifactVersion>();
         for (ArtifactVersion version : availableVersions) {
@@ -220,4 +237,5 @@ public class ParentCheckerMojo extends AbstractMojo {
     public void setMavenProjectBuilder(MavenProjectBuilder mavenProjectBuilder) {
         this.mavenProjectBuilder = mavenProjectBuilder;
     }
+
 }
