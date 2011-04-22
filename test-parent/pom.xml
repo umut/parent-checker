@@ -5,7 +5,7 @@
 
     <groupId>org.hoydaa.maven.plugins</groupId>
     <artifactId>test-parent</artifactId>
-    <version>1.3</version>
+    <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>test-parent</name>
@@ -14,5 +14,31 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.hoydaa.maven.plugins</groupId>
+                <artifactId>parent-checker-maven-plugin</artifactId>
+                <version>1.0-SNAPSHOT</version>
+                <!--<executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>-->
+                <configuration>
+                    <forceUpgrade>false</forceUpgrade>
+                    <checkArtifacts>
+                        <artifact>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-parent-checker-plugin-parent</artifactId>
+                        </artifact>
+                    </checkArtifacts>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
