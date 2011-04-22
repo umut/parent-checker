@@ -13,6 +13,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!--<force.upgrade>true</force.upgrade>-->
     </properties>
 
     <build>
@@ -21,19 +22,19 @@
                 <groupId>org.hoydaa.maven.plugins</groupId>
                 <artifactId>parent-checker-maven-plugin</artifactId>
                 <version>1.0-SNAPSHOT</version>
-                <!--<executions>
+                <executions>
                     <execution>
                         <goals>
                             <goal>check</goal>
                         </goals>
                     </execution>
-                </executions>-->
+                </executions>
                 <configuration>
                     <forceUpgrade>false</forceUpgrade>
                     <checkArtifacts>
                         <artifact>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-parent-checker-plugin-parent</artifactId>
+                            <groupId>org.hoydaa.maven.plugins</groupId>
+                            <artifactId>test-parent</artifactId>
                         </artifact>
                     </checkArtifacts>
                 </configuration>

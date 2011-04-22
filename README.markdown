@@ -89,28 +89,28 @@ Depending on the situation the plugin behaves differently and produces different
 
 When the plugin is configured with `force.upgrade=false` and there are two new versions, it just displays a warning log.
 
-    [WARNING] New versions available for your parent POM 'org.foo:myparent:pom:1.0-SNAPSHOT'!
-    [WARNING] 1.0 (not forced)
-    [WARNING] 1.1 (not forced)
-    [WARNING] Your parent POM org.foo:myparent:pom:1.0-SNAPSHOT is 2 versions behind, you have to upgrade it to 1.1.
+    [WARNING] New versions available for your parent POM org.hoydaa.maven.plugins:test-parent:pom:1.1!
+    [WARNING] 1.2 (not forced)
+    [WARNING] 1.3 (not forced)
+    [WARNING] Your parent POM org.hoydaa.maven.plugins:test-parent:pom:1.1 is 2 versions behind, you have to upgrade it to 1.3!
 
 When the plugin is configured with `force.upgrade=true` and there are two new versions, it makes the build fail.
 
-    [WARNING] New versions available for your parent POM 'org.foo:myparent:pom:1.0-SNAPSHOT'!
-    [WARNING] 1.0 (not forced)
-    [WARNING] 1.1 (not forced)
+    [WARNING] New versions available for your parent POM org.hoydaa.maven.plugins:test-parent:pom:1.1!
+    [WARNING] 1.2 (not forced)
+    [WARNING] 1.3 (not forced)
     [INFO] ------------------------------------------------------------------------
     [ERROR] BUILD ERROR
     [INFO] ------------------------------------------------------------------------
-    [INFO] Your parent POM org.foo:myparent:pom:1.0-SNAPSHOT is 2 versions behind, you have to upgrade it to 1.1.
+    [INFO] Your parent POM org.hoydaa.maven.plugins:test-parent:pom:1.1 is 2 versions behind, you have to upgrade it to 1.3!
 
 When the plugin is configured with `force.upgrade=false` and there are three versions one of which is forced, it makes the build fail even the `forceUpgrade` is false.
 
-    [WARNING] New versions available for your parent POM 'org.foo:myparent:pom:1.0-SNAPSHOT'!
-    [WARNING] 1.1-SNAPSHOT (not forced)
-    [WARNING] 1.2-SNAPSHOT (not forced)
-    [WARNING] 1.3-SNAPSHOT (FORCED)
+    [WARNING] New versions available for your parent POM org.hoydaa.maven.plugins:test-parent:pom:1.1!
+    [WARNING] 1.2 (not forced)
+    [WARNING] 1.3 (not forced)
+    [WARNING] 1.4 (FORCED)
     [INFO] ------------------------------------------------------------------------
     [ERROR] BUILD ERROR
     [INFO] ------------------------------------------------------------------------
-    [INFO] Your parent POM org.foo:myparent:pom:1.0-SNAPSHOT is 3 versions behind, you have to upgrade it to 1.3-SNAPSHOT. You have to upgrade your parent POM to the latest forced update at least!
+    [INFO] Your parent POM org.hoydaa.maven.plugins:test-parent:pom:1.1 is 3 versions behind, you have to upgrade it to 1.4! You have to upgrade your parent POM to the latest forced update at least!

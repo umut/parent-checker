@@ -136,7 +136,7 @@ public class ParentCheckerMojo extends AbstractMojo {
             if (newVersions.size() > 0) {
                 boolean forcedUpdateExists = false;
 
-                getLog().warn("New versions available for your parent POM '" + parentArtifact.toString() + "'!");
+                getLog().warn("New versions available for your parent POM " + parentArtifact.toString() + "!");
                 for (ArtifactVersion version : newVersions) {
                     boolean forced = isForced(version);
                     forcedUpdateExists = forcedUpdateExists || forced;
@@ -175,7 +175,7 @@ public class ParentCheckerMojo extends AbstractMojo {
     //returns a warning message to display in logs
     private String getWarningText(List<ArtifactVersion> newVersions) {
         return "Your parent POM " + project.getParentArtifact().toString() + " is " + newVersions.size()
-                + " versions behind, you have to upgrade it to " + newVersions.get(newVersions.size() - 1) + ".";
+                + " versions behind, you have to upgrade it to " + newVersions.get(newVersions.size() - 1) + "!";
     }
 
     //checks if the parent is in the list of artifacts to check
