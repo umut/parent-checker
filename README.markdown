@@ -1,20 +1,20 @@
 ###parent-checker-maven-plugin
 
-Plugin to force parent POM updates for using projects.
+Plugin to force for parent POM updates for using projects.
 
-Releasing and having the using projects upgrade to the new version of a parent `POM`  is always a burden. You have send
-an email to the developers of the projects requesting an upgrade on the parent `POM` but it simply does not reach it's
-destination, goes to junk or simply no one cares :)
+After release and having the using projects upgrade to the new version of their parent `POM`  is always a burden. You
+have to send an email to the developers of the projects requesting an upgrade on the parent `POM` but the mail simply
+does not reach it's destination, goes to junk or simply no one cares about it :)
 
-As developers we are using the same build tool (`maven`) and we can use our build tool to pass the *communiqué*.
+As developers we use the same build tool (`maven`) and so we can also use the same tool to pass the *communiqué*.
 
-The plugin by default attaches itself to `validate` life-cycle phase to check parent `POM` updates if the user does not
-explicitly specify an `execution` in the plugin configuration. What the plugin does it simply;
+By default the plugin attaches itself to `validate` life-cycle phase to check parent `POM` updates if the user did not
+explicitly specify an `execution` in the plugin configuration. The plugin simply
 
  - Checks whether the current building project has a parent `POM`
- - If so checks whether it is one the parent `POM`s that we want to check for updates
- - If so checks whether there is a newer version
- - If so depending on the plugin configuration, it makes the build fail or print a warning message to let the developer be aware of it
+ - If so, checks whether it is one of the parent `POM`s that we care (according to the given checkArtifacts config)
+ - If so, checks whether there is a newer version
+ - If so, depending on the plugin configuration, it makes the build fail or print a warning message to let the developer be aware of it
 
 ###Configuration
 
@@ -45,12 +45,12 @@ explicitly specify an `execution` in the plugin configuration. What the plugin d
 
 ####Options
 
-- **forceUpgrade**: If true, makes the plugin fail if a newer version for the parent `POM` is available either in the local repository or in one of the remote repositories.
+- **forceUpgrade**: If true, makes the plugin fail when a newer version for the parent `POM` is available either in the local repository or in one of the remote repositories.
 - **checkArtifacts**: Set the parent `POM` artifacts that you want to be checked by the plugin. You can set more than one.
 
 Another option to make the build fail is to have a property named `force.upgrade` within the released parent `POM`. In
 this case no matter what is configured in the plugin configuration --regarding forceUpgrade--, if the plugin finds
-`force.upgrade=true` within any release `POM` file it will make the build fail since it is assuming that you have a
+`force.upgrade=true` within any released `POM` file it will make the build fail since it is assumed that you have a
 SPECIFIC VERSION that you want to force for update. So if you want a specific version to force for update, just add a
 property named `force.upgrade` in it before releasing like the following example.
 
@@ -67,7 +67,7 @@ property named `force.upgrade` in it before releasing like the following example
 ###Usage
 
 As said, the plugin attaches itself to the `validate` life-cycle phase, meaning; it is enough that you define the plugin
-within your parent `POM`. But you can also the the plugin explicitly by executing the following line.
+within your parent `POM`. But you can also run the plugin explicitly by executing the following line.
 
     mvn org.hoydaa.maven.plugins:parent-checker-maven-plugin:check
 
@@ -87,24 +87,24 @@ In this case you just have to use the plugin prefix and the goal to run it, no `
 
 Depending on the situation the plugin behaves differently and produces different outputs.
 
-When the plugin is configured with `force.update=false` and there are two new versions, it just displays a warning log.
+When the plugin is configured with `force.upgrade=false` and there are two new versions, it just displays a warning log.
 
     [WARNING] New versions available for your parent POM 'org.foo:myparent:pom:1.0-SNAPSHOT'!
-    [WARNING] 1.1-SNAPSHOT (not forced)
-    [WARNING] 1.2-SNAPSHOT (not forced)
-    [WARNING] Your parent POM org.foo:myparent:pom:1.0-SNAPSHOT is 2 versions behind, you have to upgrade it to 1.2-SNAPSHOT.
+    [WARNING] 1.0 (not forced)
+    [WARNING] 1.1 (not forced)
+    [WARNING] Your parent POM org.foo:myparent:pom:1.0-SNAPSHOT is 2 versions behind, you have to upgrade it to 1.1.
 
-When the plugin is configured with `force.update=true` and there are two new versions, it makes the build fail.
+When the plugin is configured with `force.upgrade=true` and there are two new versions, it makes the build fail.
 
     [WARNING] New versions available for your parent POM 'org.foo:myparent:pom:1.0-SNAPSHOT'!
-    [WARNING] 1.1-SNAPSHOT (not forced)
-    [WARNING] 1.2-SNAPSHOT (not forced)
+    [WARNING] 1.0 (not forced)
+    [WARNING] 1.1 (not forced)
     [INFO] ------------------------------------------------------------------------
     [ERROR] BUILD ERROR
     [INFO] ------------------------------------------------------------------------
-    [INFO] Your parent POM org.foo:myparent:pom:1.0-SNAPSHOT is 2 versions behind, you have to upgrade it to 1.2-SNAPSHOT.
+    [INFO] Your parent POM org.foo:myparent:pom:1.0-SNAPSHOT is 2 versions behind, you have to upgrade it to 1.1.
 
-When the plugin is configured with `force.update=false` and there are three versions one of which is forced, it makes the build fail even the `force.update` is false.
+When the plugin is configured with `force.upgrade=false` and there are three versions one of which is forced, it makes the build fail even the `forceUpgrade` is false.
 
     [WARNING] New versions available for your parent POM 'org.foo:myparent:pom:1.0-SNAPSHOT'!
     [WARNING] 1.1-SNAPSHOT (not forced)
