@@ -61,27 +61,6 @@
                     <target>1.5</target>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.hoydaa.maven.plugins</groupId>
-                <artifactId>parent-checker-maven-plugin</artifactId>
-                <version>1.0-SNAPSHOT</version>
-                <!--<executions>
-                    <execution>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>-->
-                <configuration>
-                    <forceUpgrade>false</forceUpgrade>
-                    <checkArtifacts>
-                        <artifact>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-parent-checker-plugin-parent</artifactId>
-                        </artifact>
-                    </checkArtifacts>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 

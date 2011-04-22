@@ -1,0 +1,50 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.hoydaa.maven.plugins</groupId>
+        <artifactId>test-parent</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <groupId>org.hoydaa.maven.plugins</groupId>
+    <artifactId>test-artifact</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>test-artifact</name>
+    <url>http://maven.apache.org</url>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.hoydaa.maven.plugins</groupId>
+                <artifactId>parent-checker-maven-plugin</artifactId>
+                <version>1.0-SNAPSHOT</version>
+                <!--<executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>-->
+                <configuration>
+                    <forceUpgrade>false</forceUpgrade>
+                    <checkArtifacts>
+                        <artifact>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-parent-checker-plugin-parent</artifactId>
+                        </artifact>
+                    </checkArtifacts>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
