@@ -104,7 +104,7 @@ When the plugin is configured with `force.upgrade=true` and there are two new ve
     [INFO] ------------------------------------------------------------------------
     [INFO] Your parent POM org.hoydaa.maven.plugins:test-parent:pom:1.1 is 2 versions behind, you have to upgrade it to 1.3!
 
-When the plugin is configured with `force.upgrade=false` and there are three versions one of which is forced, it makes the build fail even the `forceUpgrade` is false.
+When there are three versions one of which is forced (meaning there is a property force.upgrade=true within the released parent POM, it makes the build fail even the forceUpgrade is false for the plugin.
 
     [WARNING] New versions available for your parent POM org.hoydaa.maven.plugins:test-parent:pom:1.1!
     [WARNING] 1.2 (not forced)
