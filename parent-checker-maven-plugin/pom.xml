@@ -9,24 +9,58 @@
     <version>1.0-SNAPSHOT</version>
 
     <name>Parent Checker</name>
-    <url>http://maven.apache.org</url>
     <description>Checks whether there is a newer parent artifact for the project that is being built.</description>
+    <url>https://github.com/umut/parent-checker</url>
+
+    <licenses>
+        <license>
+            <name>Apache 2</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>git://github.com/umut/parent-checker.git</connection>
+        <developerConnection>git@github.com:umut/parent-checker.git</developerConnection>
+        <url>https://github.com/umut/parent-checker</url>
+    </scm>
+
+    <developers>
+        <developer>
+            <id>umut.utkan</id>
+            <name>Umut Utkan</name>
+            <email>umut.utkan@gmail.com</email>
+            <organization>Hoydaa</organization>
+            <organizationUrl>www.hoydaa.com</organizationUrl>
+            <url>http://www.codinginahurry.com</url>
+            <timezone>+2</timezone>
+        </developer>
+    </developers>
+
+    <properties>
+        <maven.version>2.1.0</maven.version>
+    </properties>
+
+    <prerequisites>
+        <maven>${maven.version}</maven>
+    </prerequisites>
 
     <dependencies>
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-plugin-api</artifactId>
-            <version>2.0</version>
+            <version>${maven.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-artifact</artifactId>
-            <version>2.1.0</version>
+            <version>${maven.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-project</artifactId>
-            <version>2.1.0</version>
+            <version>${maven.version}</version>
         </dependency>
 
         <dependency>
