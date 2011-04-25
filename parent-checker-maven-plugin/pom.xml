@@ -3,6 +3,12 @@
 
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>
+
     <groupId>org.hoydaa.maven.plugins</groupId>
     <artifactId>parent-checker-maven-plugin</artifactId>
     <packaging>maven-plugin</packaging>
@@ -37,6 +43,13 @@
             <timezone>+2</timezone>
         </developer>
     </developers>
+
+    <distributionManagement>
+        <site>
+            <id>nexus-site</id>
+            <url>dav:http://localhost/foo/</url>
+        </site>
+    </distributionManagement>
 
     <properties>
         <maven.version>2.1.0</maven.version>
@@ -97,5 +110,35 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>release-sign-artifacts</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.2</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>
