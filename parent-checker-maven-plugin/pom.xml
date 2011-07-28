@@ -27,8 +27,8 @@
     </licenses>
 
     <scm>
-        <connection>git://github.com/umut/parent-checker.git</connection>
-        <developerConnection>git@github.com:umut/parent-checker.git</developerConnection>
+        <connection>scm:git:https://github.com/umut/parent-checker.git</connection>
+        <developerConnection>scm:git:https://github.com/umut/parent-checker.git</developerConnection>
         <url>https://github.com/umut/parent-checker</url>
     </scm>
 
