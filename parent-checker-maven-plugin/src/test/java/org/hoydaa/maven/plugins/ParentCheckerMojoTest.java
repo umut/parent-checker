@@ -1,6 +1,7 @@
 package org.hoydaa.maven.plugins;
 
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.metadata.ArtifactMetadataRetrievalException;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
@@ -29,6 +30,8 @@ public class ParentCheckerMojoTest {
 
     private Artifact parent;
 
+    private Artifact artifact;
+
     private MavenProject project;
 
     private ArtifactFactory artifactFactory;
@@ -45,6 +48,9 @@ public class ParentCheckerMojoTest {
         EasyMock.replay(parent);
         project = new MavenProject();
         project.setParentArtifact(parent);
+
+        artifact = EasyMock.createMock(Artifact.class);
+        project.setArtifact(artifact);
 
         artifactFactory = EasyMock.createMock(ArtifactFactory.class);
         EasyMock.expect(artifactFactory.createParentArtifact(EasyMock.isA(String.class), EasyMock.isA(String.class), EasyMock.isA(String.class))).andAnswer(

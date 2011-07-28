@@ -119,67 +119,78 @@ public class ParentCheckerMojo extends AbstractMojo {
 
 
     public void execute() throws MojoExecutionException {
-        Artifact parentArtifact = project.getParentArtifact();
-        if (null == parentArtifact || checkArtifacts == null || !hasValidParent()) {
-            getLog().debug("Parent " + parentArtifact + " is not in the list " + checkArtifacts + ", skipping...");
+        MavenProject tProject = project;
+        while (tProject != null) {
+            Artifact parentArtifact = tProject.getParentArtifact();
+            if (null == parentArtifact || checkArtifacts == null || !hasValidParent(tProject)) {
+                getLog().info("This parent '" + parentArtifact + "' is not in the list of artifacts '" + checkArtifacts + "' to be checked, skipping...");
+            } else {
+                try {
+                    // get newer versions of the parent, if there is one.
+                    ArtifactVersion currentVersion = tProject.getParentArtifact().getSelectedVersion();
+                    List<ArtifactVersion> availableVersions = artifactMetadataSource.retrieveAvailableVersions(
+                            artifactFactory.createParentArtifact(parentArtifact.getGroupId(),
+                                    parentArtifact.getArtifactId(), parentArtifact.getVersion()),
+                            localRepository, remoteArtifactRepositories);
+                    List<ArtifactVersion> newVersions = getNewerVersions(currentVersion, availableVersions);
 
-            return;
-        }
+                    // if there is newer versions available
+                    if (newVersions.size() > 0) {
+                        boolean forcedUpdateExists = false;
 
-        try {
-            ArtifactVersion currentVersion = project.getParentArtifact().getSelectedVersion();
-            List<ArtifactVersion> availableVersions = artifactMetadataSource.retrieveAvailableVersions(
-                    artifactFactory.createParentArtifact(parentArtifact.getGroupId(),
-                            parentArtifact.getArtifactId(), parentArtifact.getVersion()),
-                    localRepository, remoteArtifactRepositories);
-            List<ArtifactVersion> newVersions = getNewerVersions(currentVersion, availableVersions);
-            if (newVersions.size() > 0) {
-                boolean forcedUpdateExists = false;
+                        getLog().warn("New versions available for your parent POM " + parentArtifact.toString() + " of project '" + tProject.getArtifact().toString() + "'!");
+                        for (ArtifactVersion version : newVersions) {
+                            boolean forced = isForced(version, tProject);
+                            forcedUpdateExists = forcedUpdateExists || forced;
+                            getLog().warn(version.toString() + " (" + (forced ? "FORCED" : "not forced") + ")");
+                        }
 
-                getLog().warn("New versions available for your parent POM " + parentArtifact.toString() + "!");
-                for (ArtifactVersion version : newVersions) {
-                    boolean forced = isForced(version);
-                    forcedUpdateExists = forcedUpdateExists || forced;
-                    getLog().warn(version.toString() + " (" + (forced ? "FORCED" : "not forced") + ")");
-                }
-
-                if (forceUpgrade) {
-                    throw new MojoExecutionException(getWarningText(newVersions));
-                } else if (forcedUpdateExists) {
-                    throw new MojoExecutionException(getWarningText(newVersions) + " You have to upgrade your parent POM to the latest forced update at least!");
-                } else {
-                    getLog().warn(getWarningText(newVersions));
+                        if (forceUpgrade) {
+                            throw new MojoExecutionException(getWarningText(newVersions, tProject) + " You have to upgrade your parent POM to the latest version!");
+                        } else if (forcedUpdateExists) {
+                            throw new MojoExecutionException(getWarningText(newVersions, tProject) + " You have to upgrade your parent POM to the latest forced update at least!");
+                        } else {
+                            getLog().warn(getWarningText(newVersions, tProject));
+                        }
+                    } else {
+                        getLog().info("Your parent POM's are all up-to-date, good to do dude.");
+                    }
+                } catch (ArtifactMetadataRetrievalException e) {
+                    e.printStackTrace();
+                } catch (OverConstrainedVersionException e) {
+                    e.printStackTrace();
+                } catch (ProjectBuildingException e) {
+                    e.printStackTrace();
                 }
             }
-        } catch (ArtifactMetadataRetrievalException e) {
-            e.printStackTrace();
-        } catch (OverConstrainedVersionException e) {
-            e.printStackTrace();
-        } catch (ProjectBuildingException e) {
-            e.printStackTrace();
+
+            Artifact temp = tProject.getParentArtifact();
+            tProject = tProject.getParent();
+            if (null != tProject)
+                tProject.setArtifact(temp);
         }
     }
 
     //returns if artifact is forced for update
-    private boolean isForced(ArtifactVersion version) throws ProjectBuildingException {
-        return Boolean.parseBoolean((String) getProjectForParent(version).getProperties().get(FORCE_UPGRADE));
+    private boolean isForced(ArtifactVersion version, MavenProject project) throws ProjectBuildingException {
+        return Boolean.parseBoolean((String) getProjectForParent(version, project).getProperties().get(FORCE_UPGRADE));
     }
 
     //returns project for the parent artifact
-    private MavenProject getProjectForParent(ArtifactVersion version) throws ProjectBuildingException {
+    private MavenProject getProjectForParent(ArtifactVersion version, MavenProject project) throws ProjectBuildingException {
         Artifact parentTemp = artifactFactory.createParentArtifact(project.getParentArtifact().getGroupId(),
                 project.getParentArtifact().getArtifactId(), version.toString());
         return mavenProjectBuilder.buildFromRepository(parentTemp, remoteArtifactRepositories, localRepository);
     }
 
     //returns a warning message to display in logs
-    private String getWarningText(List<ArtifactVersion> newVersions) {
-        return "Your parent POM " + project.getParentArtifact().toString() + " is " + newVersions.size()
+    private String getWarningText(List<ArtifactVersion> newVersions, MavenProject project) {
+        return "Parent POM '" + project.getParentArtifact().toString() + "' of project '" + project.getArtifact().toString() + "' is " + newVersions.size()
                 + " versions behind, you have to upgrade it to " + newVersions.get(newVersions.size() - 1) + "!";
     }
 
     //checks if the parent is in the list of artifacts to check
-    private boolean hasValidParent() {
+    private boolean hasValidParent(MavenProject project) {
         for (org.hoydaa.maven.plugins.Artifact artifact : checkArtifacts) {
             if (artifact.getGroupId().equals(project.getParentArtifact().getGroupId())
                     && artifact.getArtifactId().equals(project.getParentArtifact().getArtifactId())) {
