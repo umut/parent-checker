@@ -12,7 +12,7 @@
     <groupId>org.hoydaa.maven.plugins</groupId>
     <artifactId>parent-checker-maven-plugin</artifactId>
     <packaging>maven-plugin</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
 
     <name>Parent Checker</name>
     <description>Checks whether there is a newer parent artifact for the project that is being built.</description>
